@@ -11,11 +11,10 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+	"splash": {
+		"image": "./assets/images/splash.jpg",
+		"resizeMode": "cover"
+	},
     "updates": {
       "fallbackToCacheTimeout": 0
     },

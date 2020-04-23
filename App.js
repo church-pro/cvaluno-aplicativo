@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Text, Image, Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import white from './constants/Colors'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import rootReducer from './reducers'
+import Constants from 'expo-constants'
+import Colors from './constants/Colors';
 
 const logger = store => next => action => {
 	console.group(action.type ? action.type : 'Redux-Thunk')
@@ -19,7 +20,15 @@ const logger = store => next => action => {
 	console.groupEnd(action.type ? action.type : 'Redux-Thunk')
 	return resultado
 }
-const store = createStore(rootReducer, applyMiddleware(thunk, logger))
+const store = createStore(rootReducer, applyMiddleware(thunk))
+
+function BarraDeEstado({ backgroundColor, ...props }) {
+	return (
+		<View style={{ backgroundColor, height: Constants.statusBarHeight }}>
+			<StatusBar translucent backgroundColor={backgroundColor} {...props} />
+		</View>
+	)
+}
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
@@ -40,7 +49,7 @@ export default function App(props) {
 				SplashScreen.preventAutoHide();
 
 				// Load our initial navigation state
-				//setInitialNavigationState(await getInitialState());
+				setInitialNavigationState(await getInitialState());
 
 				// Load fonts
 				await Font.loadAsync({
@@ -79,7 +88,8 @@ export default function App(props) {
 								name="Home" 
 								component={BottomTabNavigator} 
 								options={{
-									header: () => null,
+									title: 'CVAluno',
+									headerLeft: () => null,
 								}} 
 							/>
 						</Stack.Navigator>

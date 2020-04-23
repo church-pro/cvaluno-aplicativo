@@ -12,9 +12,19 @@ import {
 } from '../helpers/api'
 import { connect } from 'react-redux'
 import Loading from '../components/Loading'
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+
+const botao = (props) => {
+	return (
+		<TouchableOpacity>
+			<Text>{props.texto}</Text>
+		</TouchableOpacity>
+	)
+}
 
 function LoginScreen(props) {
-	const [matricula, setMatricula] = React.useState('41006')
+	const [matricula, setMatricula] = React.useState('')
 	const [carregando, setCarregando] = React.useState(false)
 	const [encaminhamento, setEncaminhamento] = React.useState('Home')
 
@@ -35,7 +45,7 @@ function LoginScreen(props) {
 		loadResourcesAndDataAsync();
 	}, [])
 
-	const submitHandler = () => {
+	const submitHandler = async () => {
 		let showErrorMessage = false	
 		if(matricula === ''){
 			showErrorMessage = true
@@ -43,10 +53,19 @@ function LoginScreen(props) {
 		if(showErrorMessage){
 			Alert.alert('Preencha a matrícula')
 		}else{
-			NetInfo
-				.getConnectionInfo()
-				.then(state => {
-					setCarregando(true)
+			try{
+				setCarregando(true)
+				let estado = null
+				if(Platform.OS === 'android'){
+					estado = await NetInfo.fetch()
+				}
+				if(Platform.OS === 'web'){
+					estado = await NetInfo.getConnectionInfo()
+				}
+				if(
+					(Platform.OS === 'android' && estado.isConnected) ||
+					(Platform.OS === 'web' && estado) 
+				) {
 					const dados = {
 						matricula,
 					}
@@ -59,14 +78,81 @@ function LoginScreen(props) {
 										props.navigation.navigate(encaminhamento)
 									})
 							} else {
-								setCarregando(false)
 								Alert.alert('Aviso', 'Usuário/Senha não conferem!')
+								setCarregando(false)
 							}
 						})
-
-				})
+				}else{
+					Alert.alert('Aviso', 'Usuário/Senha não conferem!')
+					setCarregando(false)
+				}
+			} catch (e) {
+				console.warn(e);
+			}
 		}
 	}
+
+	const listaDeBotoes = []
+	for(let i = 1; i <= 3; i++){
+		let item = {}
+		item.linha = i
+		item.botoes = []
+		for(let j = 1; j <= 3; j++){
+			let valorParaSomar = 0
+			if(i === 2){
+				valorParaSomar = 3
+			}
+			if(i === 3){
+				valorParaSomar = 6
+			}
+			const botao = {
+				id: `botao${j*i}`,
+				texto: j+valorParaSomar,
+				onPress: () => setMatricula(`${matricula}${j+valorParaSomar}`),
+			}
+			item.botoes.push(botao)
+		}
+		listaDeBotoes.push(item)
+	}
+
+	let item = {}
+	item.linha = 4
+	item.botoes = []
+	for(let j = 1; j <= 3; j++){
+		let id = 0
+		let texto = ''
+		let onPress = ''
+		switch(j){
+			case 1:
+				id = 'botaoApagar'
+				texto = <Ionicons
+					name={'md-backspace'}
+					size={24}
+					style={{ marginBottom: -3 }} />
+					onPress = () => setMatricula(matricula.substring(0, matricula.length-1))
+				break;
+			case 2:
+				id = 'botaoZero'
+				texto = 0
+				onPress = () => setMatricula(`${matricula}0`)
+				break;
+			case 3:
+				id = 'botaoLogar'
+				texto = <Ionicons
+					name={'md-send'}
+					size={24}
+					style={{ marginBottom: -3 }} />
+					onPress = () => submitHandler()
+				break;
+		}
+		const botao = {
+			id,
+			texto,
+			onPress,
+		}
+		item.botoes.push(botao)
+	}
+	listaDeBotoes.push(item)
 
 	return (
 		<View style={styles.container}>
@@ -76,28 +162,64 @@ function LoginScreen(props) {
 			}
 			{ 
 				!carregando &&
-					<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-
-						<View style={styles.welcomeContainer}>
+					<>
+						<View style={styles.viewLogo}>
 							<Image
-								source={require('../assets/images/robot-prod.png')}
-								style={styles.welcomeImage}
+								source={require('../assets/images/logo.png')}
+								style={styles.logo}
 							/>
 						</View>
 
-						<View style={styles.getStartedContainer}>
-							<Text style={styles.getStartedText}>Espaço do Aluno</Text>
-							<TextInput
-								value={matricula}
-								onChangeText={value => setMatricula(value)}
-							/>
-							<TouchableOpacity
-								onPress={() => submitHandler()}>
-								<Text>Entrar</Text>
-							</TouchableOpacity>
+						<View style={styles.conteudo}>
+							<View
+								style={{
+									height: 50,
+								}}>
+								<Text style={styles.texto}>Informe a Matrícula</Text>
+								<Text style={styles.texto}>{matricula}</Text>
+							</View>
+							<View 
+								style={{
+									flex: 1,
+									paddingHorizontal: 80,
+									paddingVertical: 30,
+								}}>
+								{
+									listaDeBotoes.map(linha => {
+										const linhaParaMostrar = linha.botoes.map(item => {
+											return (
+												<View key={item.id} style={styles.containerButton}>
+													<TouchableOpacity
+														style={styles.button}
+														onPress={item.onPress} >
+														<Text 
+															style={{ 
+																...styles.texto, 
+																color: Colors.white }}> 
+															{item.texto} 
+														</Text>
+													</TouchableOpacity>
+												</View>
+											)
+										})
+
+										return (
+											<View 
+												key={linha.linha}
+												style={{
+													flex: 1,
+													flexDirection: 'row',	
+													justifyContent: 'space-between',
+												}}>
+												{linhaParaMostrar}
+											</View>
+										)
+									})
+								}
+							</View>
 						</View>
 
-					</ScrollView>
+					</>
 			}
 		</View>
 	);
@@ -115,31 +237,44 @@ export default connect(null, mapDispatchToProps)(LoginScreen)
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: Colors.white,
 	},
-	contentContainer: {
-		paddingTop: 30,
-	},
-	welcomeContainer: {
+	viewLogo: {
+		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 10,
-		marginBottom: 20,
+		paddingVertical: 50,
 	},
-	welcomeImage: {
-		width: 100,
+	logo: {
 		height: 80,
 		resizeMode: 'contain',
-		marginTop: 3,
-		marginLeft: -10,
 	},
-	getStartedContainer: {
-		alignItems: 'center',
-		marginHorizontal: 50,
+	conteudo: {
+		flex: 3,
 	},
-	getStartedText: {
+	textoMatricula: {
 		fontSize: 17,
 		color: 'rgba(96,100,109, 1)',
 		lineHeight: 24,
 		textAlign: 'center',
+	},
+	texto: {
+		fontSize: 24,
+		color: 'rgba(96,100,109, 1)',
+		lineHeight: 24,
+		textAlign: 'center',
+	},
+	containerButton: {
+		paddingVertical: 10,
+		marginTop: 10,
+	},
+	button: {
+		backgroundColor: Colors.primary,
+		borderRadius: 60 / 2,
+		height: 60,
+		width: 60,
+		justifyContent: 'center',
+		shadowOffset: { width: 5, height: 5, },
+		shadowColor: 'rgba(0,0,0,0.3)',
+		shadowOpacity: 1.0,
 	},
 });

@@ -14,15 +14,23 @@ import Loading from '../components/Loading';
 import NetInfo from "@react-native-community/netinfo"
 
 function HomeScreen(props) {
-	const [carregando, setCarregando] = React.useState(false)
 	const [sincronizando, setSincronizando] = React.useState(false)
 
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
 				setSincronizando(true)
-				const estado = NetInfo.getConnectionInfo()
-				if(estado){
+				let estado = null
+				if(Platform.OS === 'android'){
+					estado = await NetInfo.fetch()
+				}
+				if(Platform.OS === 'web'){
+					estado = await NetInfo.getConnectionInfo()
+				}
+				if(
+					(Platform.OS === 'android' && estado.isConnected) ||
+					(Platform.OS === 'web' && estado) 
+				) {
 					const dados = {
 						matricula: props.usuario.matricula,
 					}
@@ -48,11 +56,6 @@ function HomeScreen(props) {
 		<View style={styles.container}>
 
 			{
-				carregando &&
-					<Loading title={'Entrando'} />
-			}
-
-			{
 				sincronizando &&
 					<View style={{
 						flex: 0.1,
@@ -60,31 +63,30 @@ function HomeScreen(props) {
 						alignItems: 'center',
 						alignSelf: 'center',
 					}}>
-						<ActivityIndicator />
+						<ActivityIndicator 
+							color="#2D84C3"
+						/>
 						<Text style={{ marginLeft: 5, color: '#000000' }}>
 							Sincronizando ...
 						</Text>
 					</View>
 			}
 
-			{
-				!carregando &&
-					<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-						<View style={styles.getStartedContainer}>
-							{
-								usuario &&
-									<>
-										<Text style={styles.getStartedText}>Espaço do Aluno</Text>
-										<Text style={styles.getStartedText}>Matrícula {usuario.matricula}</Text>
-										<Text style={styles.getStartedText}>{usuario.nome}</Text>
-										<Text style={styles.getStartedText}>Time {usuario.time}</Text>
-										<Text style={styles.getStartedText}>Turma {usuario.turma}</Text>
-										<Text style={styles.getStartedText}>Situação {usuario.situacao}</Text>
-									</>
-							}
-						</View>
-					</ScrollView>
-			}
+			<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+				<View style={styles.getStartedContainer}>
+					{
+						usuario &&
+							<>
+								<Text style={styles.getStartedText}>Espaço do Aluno</Text>
+								<Text style={styles.getStartedText}>Matrícula {usuario.matricula}</Text>
+								<Text style={styles.getStartedText}>{usuario.nome}</Text>
+								<Text style={styles.getStartedText}>Time {usuario.time}</Text>
+								<Text style={styles.getStartedText}>Turma {usuario.turma}</Text>
+								<Text style={styles.getStartedText}>Situação {usuario.situacao}</Text>
+							</>
+					}
+				</View>
+			</ScrollView>
 
 		</View>
 	);
