@@ -18,15 +18,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 function ReposicoesScreen(props) {
 	const [carregando, setCarregando] = React.useState(false)
-	const [idVimeo, setIdVimeo] = React.useState(null)
 
 	const {
 		usuario,
 	} = props
-
-	const selecionarReposicao = async (idVimeo) => {
-		setIdVimeo(idVimeo)
-	}
 
 	const [sincronizando, setSincronizando] = React.useState(false)
 
@@ -95,7 +90,6 @@ function ReposicoesScreen(props) {
 
 			{
 				!carregando &&
-					idVimeo === null &&
 					usuario &&
 					<View style={{flex: 1}}>
 						<View
@@ -110,18 +104,12 @@ function ReposicoesScreen(props) {
 								<SafeAreaView style={{flex: 1}}>
 									<FlatList
 										data={usuario.faltas}
-										renderItem={({ item }) => <Item posicao={item.posicao} onPress={() => setIdVimeo(item.idVimeo)} />}
+										renderItem={({ item }) => <Item item={item} onPress={() => props.navigation.navigate('Reposicao', {falta: item})} />}
 										keyExtractor={item => `aula${item.id}`}
 									/>
 								</SafeAreaView>
 						}
 					</View>
-			}
-
-			{
-				!carregando &&
-					idVimeo !== null &&
-					<Vimeo idVimeo={idVimeo} />
 			}
 
 		</View>
@@ -142,62 +130,25 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReposicoesScreen)
 
-function Item({ posicao, onPress }) {
+function Item({ item, onPress }) {
 	return (
-		<View style={styles.item}>
-			<Text style={styles.itemTitle}>Aula {posicao}</Text>
-			<TouchableOpacity
-				onPress={onPress}>
-				<Ionicons
-					name={'md-send'}
-					size={24}
-					color={Colors.white}
-					style={{ marginBottom: -3}} />
-			</TouchableOpacity>
-		</View>
+		<TouchableOpacity
+			style={styles.item}
+			onPress={onPress}>
+			<Text style={styles.itemTitle}>Aula {item.posicao}</Text>
+			<Ionicons
+				name={'md-send'}
+				size={24}
+				color={Colors.white}
+				style={{ marginTop: 5}} />
+		</TouchableOpacity>
 	);
-}
-
-const Vimeo = (props) => {
-	const [carregando, setCarregando] = React.useState(true)
-	return (
-		<View style={styles.container}>
-			{
-				carregando &&
-					<View style={{
-						flex: 0.1,
-						flexDirection: 'row',
-						alignItems: 'center',
-						alignSelf: 'center',
-					}}>
-						<ActivityIndicator 
-							color="#2D84C3"
-						/>
-						<Text style={{ marginLeft: 5, color: '#000000' }}>
-							Carregando Aula ...
-						</Text>
-					</View>
-			}
-			<WebView
-				originWhitelist={['*']}
-				source={{ uri: `https://circuitodavisaonovo.com.br/vimeo/${props.idVimeo}` }}
-				style={{ 
-					marginTop: 20,
-					flex: 1,
-				}}
-				onLoadEnd={syntheticEvent => {
-					const { nativeEvent } = syntheticEvent
-					setCarregando(nativeEvent.loading);
-				}}
-			/>
-		</View>
-	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: Colors.white,
 	},
 	conteudo: {
 		padding: 10,

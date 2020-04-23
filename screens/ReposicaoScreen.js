@@ -1,50 +1,48 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, SafeAreaView, ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import NetInfo from "@react-native-community/netinfo"
 import Colors from '../constants/Colors';
+import Loading from '../components/Loading';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Reposicao (props) {
-	const [carregando, setCarregando] = React.useState(true)
+	const { falta } = props.route.params
 	return (
-		<View style={styles.container}>
-			{
-				carregando &&
-					<View style={{
-						flex: 0.1,
-						flexDirection: 'row',
-						alignItems: 'center',
-						alignSelf: 'center',
-					}}>
-						<ActivityIndicator 
-							color="#2D84C3"
-						/>
-						<Text style={{ marginLeft: 5, color: '#000000' }}>
-							Carregando Aula ...
-						</Text>
-					</View>
-			}
+		<>
+			<View
+				style={styles.viewTitulo}>
+				<Text style={styles.viewTituloTexto}>
+					Aula {falta.posicao}
+				</Text>
+			</View>
 			<WebView
-				originWhitelist={['*']}
-				source={{ uri: `https://circuitodavisaonovo.com.br/vimeo/${props.idVimeo}` }}
-				style={{ 
-					marginTop: 20,
-					flex: 1,
-				}}
-				onLoadEnd={syntheticEvent => {
-					const { nativeEvent } = syntheticEvent
-					setCarregando(nativeEvent.loading);
-				}}
+				source={{ uri: `https://circuitodavisaonovo.com.br/vimeo/${falta.idVimeo}` }}
+				startInLoadingState={true}
+				renderLoading={() => <Loading title={"Carregando Aula"} />}
 			/>
-		</View>
+			<TouchableOpacity
+				style={styles.botao}
+				onPress={() => props.navigation.navigate('Perguntas', {perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})}>
+				<Text style={styles.textoBotao}>
+					Acessar questionário
+				</Text>
+				<Ionicons
+					name={'md-send'}
+					size={24}
+					color={Colors.white}
+					style={{marginTop: 5}}
+				/>
+			</TouchableOpacity>
+		</>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: Colors.white,
 	},
 	conteudo: {
 		padding: 10,
@@ -60,16 +58,17 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		color: Colors.white,
 	},
-	item: {
-		backgroundColor: 'skyblue',
+	botao: {
+		backgroundColor: Colors.primary,
 		padding: 10,
+		paddingHorizontal: 35,
 		marginVertical: 8,
 		marginHorizontal: 16,
 		borderRadius: 6,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 	},
-	itemTitle: {
+	textoBotao: {
 		fontSize: 24,
 		color: Colors.white,
 	},

@@ -9,6 +9,7 @@ const headers = {
 }
 
 export const sincronizarNaAPI = (dados) => executar('sincronizarAluno', dados)
+export const efetivarReposicaoNaAPI = (dados) => executar('efetivarReposicaoAluno', dados)
 
 export const executar = (url, dados = {}, method = 'POST') =>
   fetch(

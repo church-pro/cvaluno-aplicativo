@@ -7,9 +7,7 @@ import {
 	alterarUsuarioNoAsyncStorage,
 	pegarUsuarioNoAsyncStorage,
 } from '../actions'
-import {
-	sincronizarNaAPI,
-} from '../helpers/api'
+import { sincronizarNaAPI, } from '../helpers/api'
 import { connect } from 'react-redux'
 import Loading from '../components/Loading'
 import { Ionicons } from '@expo/vector-icons';
@@ -78,12 +76,12 @@ function LoginScreen(props) {
 										props.navigation.navigate(encaminhamento)
 									})
 							} else {
-								Alert.alert('Aviso', 'Usuário/Senha não conferem!')
+								Alert.alert('Aviso', 'Aluno inativado ou matrícula inválida')
 								setCarregando(false)
 							}
 						})
 				}else{
-					Alert.alert('Aviso', 'Usuário/Senha não conferem!')
+					Alert.alert('Alerta', 'Verifique sua Internet e tente novamente')
 					setCarregando(false)
 				}
 			} catch (e) {
