@@ -101,6 +101,7 @@ function ReposicoesScreen(props) {
 						{
 							usuario &&
 								usuario.faltas &&
+								usuario.faltas.length > 0 &&
 								<SafeAreaView style={{flex: 1}}>
 									<FlatList
 										data={usuario.faltas}
@@ -109,6 +110,16 @@ function ReposicoesScreen(props) {
 									/>
 								</SafeAreaView>
 						}
+
+						{
+							usuario &&
+								usuario.faltas &&
+								usuario.faltas.length === 0 &&
+								<Text style={{fontSize:20, padding: 5, margin: 20}}>
+									Sem faltas para serem Repostas!
+								</Text>
+						}
+
 					</View>
 			}
 

@@ -9,6 +9,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function Reposicao (props) {
 	const { falta } = props.route.params
+	const [mostrarVideo, setMostrarVideo] = React.useState(true)
+
+	const navegarParaQuestionario = () => {
+		setMostrarVideo(false)
+		props.navigation.navigate('Anuncio', {perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})
+	}
 	return (
 		<>
 			<View
@@ -17,14 +23,35 @@ export default function Reposicao (props) {
 					Aula {falta.posicao}
 				</Text>
 			</View>
-			<WebView
-				source={{ uri: `https://circuitodavisaonovo.com.br/vimeo/${falta.idVimeo}` }}
-				startInLoadingState={true}
-				renderLoading={() => <Loading title={"Carregando Aula"} />}
-			/>
+			{
+				mostrarVideo &&
+					<WebView
+						source={{ uri: `https://circuitodavisaonovo.com.br/vimeo/${falta.idVimeo}` }}
+						startInLoadingState={true}
+						renderLoading={() => <Loading title={"Carregando Aula"} />}
+					/>
+			}
+			{
+				!mostrarVideo &&
+					<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+						<TouchableOpacity
+							style={styles.botao}
+							onPress={() => setMostrarVideo(true)}>
+							<Text style={styles.textoBotao}>
+								Mostrar Aula
+							</Text>
+							<Ionicons
+								name={'md-eye'}
+								size={24}
+								color={Colors.white}
+								style={{marginTop: 5, marginLeft: 5}}
+							/>
+						</TouchableOpacity>
+					</View>
+			}
 			<TouchableOpacity
 				style={styles.botao}
-				onPress={() => props.navigation.navigate('Perguntas', {perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})}>
+				onPress={() => navegarParaQuestionario()}>
 				<Text style={styles.textoBotao}>
 					Acessar questionário
 				</Text>

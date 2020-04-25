@@ -25,7 +25,10 @@
       "supportsTablet": true
     },
 	"android": {
-		"package": "br.com.cvaluno.exp"
+		"package": "br.com.cvaluno.exp",
+		"config":{
+			"googleMobileAdsAppId": "ca-app-pub-6689947841260748~1454507426"
+		}
 	}
   }
 }

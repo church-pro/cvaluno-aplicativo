@@ -33,6 +33,7 @@ function BarraDeEstado({ backgroundColor, ...props }) {
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import LoginScreen from './screens/LoginScreen';
+import TutorialScreen from './screens/TutorialScreen';
 
 const Stack = createStackNavigator();
 
@@ -49,7 +50,7 @@ export default function App(props) {
 				SplashScreen.preventAutoHide();
 
 				// Load our initial navigation state
-				setInitialNavigationState(await getInitialState());
+				//setInitialNavigationState(await getInitialState());
 
 				// Load fonts
 				await Font.loadAsync({
@@ -79,7 +80,7 @@ export default function App(props) {
 						<Stack.Navigator>
 							<Stack.Screen 
 								name="Login" 
-								component={LoginScreen} 
+								component={StackLogin} 
 								options={{
 									header: () => null,
 								}} 
@@ -88,8 +89,7 @@ export default function App(props) {
 								name="Home" 
 								component={BottomTabNavigator} 
 								options={{
-									title: 'CVAluno',
-									headerLeft: () => null,
+									header: () => null,
 								}} 
 							/>
 						</Stack.Navigator>
@@ -98,6 +98,27 @@ export default function App(props) {
 			</View>
 		);
 	}
+}
+
+const StackLogin = () => {
+	return (
+		<Stack.Navigator>
+			<Stack.Screen 
+				name="Login" 
+				component={LoginScreen} 
+				options={{
+					header: () => null,
+				}} 
+			/>
+			<Stack.Screen 
+				name="Tutorial" 
+				component={TutorialScreen} 
+				options={{
+					header: () => null,
+				}} 
+			/>
+		</Stack.Navigator>
+	)
 }
 
 const styles = StyleSheet.create({

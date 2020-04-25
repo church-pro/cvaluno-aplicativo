@@ -24,15 +24,15 @@ const botao = (props) => {
 function LoginScreen(props) {
 	const [matricula, setMatricula] = React.useState('')
 	const [carregando, setCarregando] = React.useState(false)
-	const [encaminhamento, setEncaminhamento] = React.useState('Home')
 
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
 				setCarregando(true)
+				//await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
 				if (usuario.matricula && usuario.matricula !== '') {
-					props.navigation.navigate(encaminhamento)
+					props.navigation.navigate('Home')
 				}
 			} catch (e) {
 				console.warn(e);
@@ -73,10 +73,11 @@ function LoginScreen(props) {
 								props.alterarUsuarioNoAsyncStorage(retorno.usuario)
 									.then(() => {
 										setCarregando(false)
-										props.navigation.navigate(encaminhamento)
+										props.navigation.navigate('Tutorial')
 									})
 							} else {
-								Alert.alert('Aviso', 'Aluno inativado ou matrícula inválida')
+								Alert.alert('Aviso', 'Aluno inativado, matrícula inválida ou Igreja não habilitada')
+								setMatricula('')
 								setCarregando(false)
 							}
 						})
@@ -107,6 +108,7 @@ function LoginScreen(props) {
 				id: `botao${j*i}`,
 				texto: j+valorParaSomar,
 				onPress: () => setMatricula(`${matricula}${j+valorParaSomar}`),
+				corBotao: Colors.primary
 			}
 			item.botoes.push(botao)
 		}
@@ -120,6 +122,7 @@ function LoginScreen(props) {
 		let id = 0
 		let texto = ''
 		let onPress = ''
+		let corBotao = ''
 		switch(j){
 			case 1:
 				id = 'botaoApagar'
@@ -128,11 +131,13 @@ function LoginScreen(props) {
 					size={24}
 					style={{ marginBottom: -3 }} />
 					onPress = () => setMatricula(matricula.substring(0, matricula.length-1))
+					corBotao = '#AAAAAA'
 				break;
 			case 2:
 				id = 'botaoZero'
 				texto = 0
 				onPress = () => setMatricula(`${matricula}0`)
+				corBotao = Colors.primary
 				break;
 			case 3:
 				id = 'botaoLogar'
@@ -141,12 +146,14 @@ function LoginScreen(props) {
 					size={24}
 					style={{ marginBottom: -3 }} />
 					onPress = () => submitHandler()
+					corBotao = Colors.green
 				break;
 		}
 		const botao = {
 			id,
 			texto,
 			onPress,
+			corBotao,
 		}
 		item.botoes.push(botao)
 	}
@@ -185,10 +192,11 @@ function LoginScreen(props) {
 								{
 									listaDeBotoes.map(linha => {
 										const linhaParaMostrar = linha.botoes.map(item => {
+											const { button } = styles
 											return (
 												<View key={item.id} style={styles.containerButton}>
 													<TouchableOpacity
-														style={styles.button}
+														style={{backgroundColor: item.corBotao, ...button}}
 														onPress={item.onPress} >
 														<Text 
 															style={{ 
@@ -266,7 +274,6 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	button: {
-		backgroundColor: Colors.primary,
 		borderRadius: 60 / 2,
 		height: 60,
 		width: 60,

@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ReposicoesScreen from '../screens/ReposicoesScreen';
 import ReposicaoScreen from '../screens/ReposicaoScreen';
 import PerguntasScreen from '../screens/PerguntasScreen';
+import AnuncioScreen from '../screens/AnuncioScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const BottomTab = createBottomTabNavigator();
@@ -19,21 +20,29 @@ const StackReposicoes = () => {
 				name="Reposicoes" 
 				component={ReposicoesScreen} 
 				options={{
-					header: () => null,
+					headerTitle: 'CVAluno',
+					headerLeft: () => null,
 				}} 
 			/>
 			<Stack.Screen 
 				name="Reposicao" 
 				component={ReposicaoScreen} 
 				options={{
-					header: () => null,
+					headerTitle: 'CVAluno',
+				}} 
+			/>
+			<Stack.Screen 
+				name="Anuncio" 
+				component={AnuncioScreen} 
+				options={{
+					headerTitle: 'CVAluno',
 				}} 
 			/>
 			<Stack.Screen 
 				name="Perguntas" 
 				component={PerguntasScreen} 
 				options={{
-					header: () => null,
+					headerTitle: 'CVAluno',
 				}} 
 			/>
 		</Stack.Navigator>
