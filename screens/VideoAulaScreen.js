@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 import Loading from '../components/Loading';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function Reposicao (props) {
+export default function VideoAulaScreen (props) {
 	const { falta } = props.route.params
 	const [mostrarVideo, setMostrarVideo] = React.useState(true)
 

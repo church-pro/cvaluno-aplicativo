@@ -15,8 +15,9 @@ import { WebView } from 'react-native-webview';
 import NetInfo from "@react-native-community/netinfo"
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { Linking } from 'expo';
 
-function ReposicoesScreen(props) {
+function LinksZoomScreen(props) {
 	const [carregando, setCarregando] = React.useState(false)
 
 	const {
@@ -100,29 +101,29 @@ function ReposicoesScreen(props) {
 						<View
 							style={styles.viewTitulo}>
 							<Text style={styles.viewTituloTexto}>
-								Reposições
+								Aula Aberta
 							</Text>
 						</View>
 
 						{
 							usuario &&
-								usuario.faltas &&
-								usuario.faltas.length > 0 &&
+								usuario.links &&
+								usuario.links.length > 0 &&
 								<SafeAreaView style={{flex: 1}}>
 									<FlatList
-										data={usuario.faltas}
-										renderItem={({ item }) => <Item item={item} onPress={() => props.navigation.navigate('Reposicao', {falta: item})} />}
-										keyExtractor={item => `aula${item.id}`}
+										data={usuario.links}
+										renderItem={({ item }) => <Item item={item} onPress={() => Linking.openURL(item.link)} />}
+										keyExtractor={item => `link${item.id}`}
 									/>
 								</SafeAreaView>
 						}
 
 						{
 							usuario &&
-								usuario.faltas &&
-								usuario.faltas.length === 0 &&
+								usuario.links &&
+								usuario.links.length === 0 &&
 								<Text style={{fontSize:20, padding: 5, margin: 20}}>
-									Sem faltas para serem Repostas!
+									Sem links do ZOOM cadastrados!
 								</Text>
 						}
 
@@ -145,14 +146,14 @@ const mapDispatchToProps = (dispatch) => {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReposicoesScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(LinksZoomScreen)
 
 function Item({ item, onPress }) {
 	return (
 		<TouchableOpacity
 			style={styles.item}
 			onPress={onPress}>
-			<Text style={styles.itemTitle}>Aula {item.posicao}</Text>
+			<Text style={styles.itemTitle}>Link {item.dia}</Text>
 			<Ionicons
 				name={'md-send'}
 				size={24}
