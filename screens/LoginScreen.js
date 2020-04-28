@@ -32,7 +32,7 @@ function LoginScreen(props) {
 				//await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
 				if (usuario.matricula && usuario.matricula !== '') {
-					props.navigation.navigate('Home')
+					props.navigation.navigate('Principal')
 				}
 			} catch (e) {
 				console.warn(e);
@@ -73,6 +73,7 @@ function LoginScreen(props) {
 								props.alterarUsuarioNoAsyncStorage(retorno.usuario)
 									.then(() => {
 										setCarregando(false)
+										setMatricula('')
 										props.navigation.navigate('Tutorial')
 									})
 							} else {

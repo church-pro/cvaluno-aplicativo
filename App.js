@@ -79,14 +79,14 @@ export default function App(props) {
 					<NavigationContainer ref={containerRef} initialState={initialNavigationState}>
 						<Stack.Navigator>
 							<Stack.Screen 
-								name="Login" 
+								name="Inicio" 
 								component={StackLogin} 
 								options={{
 									header: () => null,
 								}} 
 							/>
 							<Stack.Screen 
-								name="Home" 
+								name="Principal" 
 								component={BottomTabNavigator} 
 								options={{
 									header: () => null,

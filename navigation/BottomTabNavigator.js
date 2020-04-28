@@ -1,17 +1,21 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, TouchableOpacity, StyleSheet, View } from 'react-native';
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
+import CarteirinhaScreen from '../screens/CarteirinhaScreen';
 import ReposicoesScreen from '../screens/ReposicoesScreen';
 import VideoAulaScreen from '../screens/VideoAulaScreen';
 import PerguntasScreen from '../screens/PerguntasScreen';
 import AnuncioScreen from '../screens/AnuncioScreen';
 import LinksZoomScreen from '../screens/LinksZoomScreen';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import { alterarUsuarioNoAsyncStorage, } from '../actions'
+import { connect } from 'react-redux'
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Reposicoes';
+const INITIAL_ROUTE_NAME = 'Carteirinha';
 
 const headerTitle = 'CVAluno'
 const Stack = createStackNavigator();
@@ -66,15 +70,78 @@ const StackAulaAtual = () => {
 	)
 }
 
+const StackCarteirinha = (props) => {
+
+	const perguntarSeQuerSair = () => {
+		Alert.alert(
+			'Sair',
+			'Realmente deseja sair?',
+			[
+				{
+					text: 'Não',
+					style: 'cancel',
+				},
+				{ text: 'Sim', onPress: () => sair() },
+			],
+			{ cancelable: false },
+		)
+
+	}
+
+	const sair = async () => {
+		await props.alterarUsuarioNoAsyncStorage({})
+		props.navigation.navigate('Login')
+	}
+
+	return (
+		<Stack.Navigator>
+			<Stack.Screen 
+				name="Carteirinha" 
+				component={CarteirinhaScreen} 
+				options={{
+					headerTitle,
+					headerRight: () => (
+						<TouchableOpacity
+							hitSlop={{
+								left: 20,
+								right: 20,
+								top: 20,
+								bottom: 20,
+							}}
+							style={{
+								marginRight: 10,
+							}}
+							onPress={() => perguntarSeQuerSair()} >
+							<Ionicons
+								name={'md-exit'}
+								size={30}
+								color={Colors.dark}
+								style={{ marginTop: 5}} />
+						</TouchableOpacity>
+					),
+				}} 
+			/>
+		</Stack.Navigator>
+	)
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		alterarUsuarioNoAsyncStorage: (usuario) => dispatch(alterarUsuarioNoAsyncStorage(usuario)),
+	}
+}
+
+const StackCarteirinhaConnectado = connect(null, mapDispatchToProps)(StackCarteirinha)
+
 export default function BottomTabNavigator({ navigation, route }) {
 	return (
 		<BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
 			<BottomTab.Screen
-				name="Reposicoes"
-				component={StackReposicoes}
+				name="Carteirinha"
+				component={StackCarteirinhaConnectado}
 				options={{
-					title: 'Reposições',
-					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-videocam" />,
+					title: 'Carteirinha',
+					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-contact" />,
 				}}
 			/>
 			<BottomTab.Screen
@@ -86,11 +153,11 @@ export default function BottomTabNavigator({ navigation, route }) {
 				}}
 			/>
 			<BottomTab.Screen
-				name="Home"
-				component={HomeScreen}
+				name="Reposicoes"
+				component={StackReposicoes}
 				options={{
-					title: 'Carteirinha',
-					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-contact" />,
+					title: 'Reposições',
+					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-videocam" />,
 				}}
 			/>
 		</BottomTab.Navigator>

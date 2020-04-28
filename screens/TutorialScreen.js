@@ -34,7 +34,7 @@ export default function TutorialScreen(props) {
 				</Text>
 			</View>
 			<TouchableOpacity
-				onPress={() => props.navigation.navigate('Home')}
+				onPress={() => props.navigation.navigate('Principal')}
 				style={styles.botao}>
 				<Text style={styles.textoBotao}>
 					Acessar

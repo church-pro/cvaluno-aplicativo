@@ -3,12 +3,8 @@ import * as React from 'react';
 import { SafeAreaView, FlatList, ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MonoText } from '../components/StyledText';
-import {
-	alterarUsuarioNoAsyncStorage,
-} from '../actions'
-import {
-	sincronizarNaAPI,
-} from '../helpers/api'
+import { alterarUsuarioNoAsyncStorage, } from '../actions'
+import { sincronizarNaAPI, } from '../helpers/api'
 import { connect } from 'react-redux'
 import Loading from '../components/Loading';
 import { WebView } from 'react-native-webview';
