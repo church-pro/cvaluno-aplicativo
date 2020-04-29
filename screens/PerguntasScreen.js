@@ -18,36 +18,35 @@ function PerguntasScreen (props) {
 
 	const submitHandler = async () => {
 		try{
-			setCarregando(true)
-			let contagemDeRespostaCertas = 0
-			for (let [key, value] of Object.entries(listaDeRespostas)) {
-				const perguntaSelecionada = perguntas.find(item => item.id === parseInt(key))
-				if(perguntaSelecionada.certa === value){
-					contagemDeRespostaCertas++
-				}
+			let estado = null
+			if(Platform.OS === 'android'){
+				estado = await NetInfo.fetch()
 			}
-
-			const porcetagemDeAcertos = contagemDeRespostaCertas/perguntas.length*100
-			let aulaReposta = false
-			if(parseInt(porcetagemDeAcertos) >= 70){
-				aulaReposta = true
+			if(Platform.OS === 'web'){
+				estado = await NetInfo.getConnectionInfo()
 			}
+			if(
+				(Platform.OS === 'android' && estado.isConnected) ||
+				(Platform.OS === 'web' && estado) 
+			) {
+				setCarregando(true)
+				let contagemDeRespostaCertas = 0
+				for (let [key, value] of Object.entries(listaDeRespostas)) {
+					const perguntaSelecionada = perguntas.find(item => item.id === parseInt(key))
+					if(perguntaSelecionada.certa === value){
+						contagemDeRespostaCertas++
+					}
+				}
+				const porcetagemDeAcertos = contagemDeRespostaCertas/perguntas.length*100
+				let aulaReposta = false
+				if(parseInt(porcetagemDeAcertos) >= 70){
+					aulaReposta = true
+				}
 
-			if(!aulaReposta){
-				Alert.alert('Alerta', 'Você não acertou 70% do exercícios refaça o questionário')
-				setCarregando(false)
-			}else{
-				let estado = null
-				if(Platform.OS === 'android'){
-					estado = await NetInfo.fetch()
-				}
-				if(Platform.OS === 'web'){
-					estado = await NetInfo.getConnectionInfo()
-				}
-				if(
-					(Platform.OS === 'android' && estado.isConnected) ||
-					(Platform.OS === 'web' && estado) 
-				) {
+				if(!aulaReposta){
+					Alert.alert('Alerta', 'Você não acertou 70% do exercícios refaça o questionário')
+					setCarregando(false)
+				}else{
 					const dados = {
 						aula_id,
 						matricula: usuario.matricula,
@@ -60,10 +59,10 @@ function PerguntasScreen (props) {
 						await props.alterarUsuarioNoAsyncStorage(usuario)
 						props.navigation.navigate('Reposicoes')
 					}
-				}else{
-					setCarregando(false)
-					Alert.alert('Alerta', 'Verifique sua Internet e tente novamente')
 				}
+			}else{
+				setCarregando(false)
+				Alert.alert('Alerta', 'Verifique sua Internet e tente novamente')
 			}
 		} catch (e) {
 			console.warn(e);

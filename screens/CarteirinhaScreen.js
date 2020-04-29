@@ -33,11 +33,15 @@ function CarteirinhaScreen(props) {
 						bgColor='black'
 						fgColor='white'/>
 				</View>
-				<View style={{alignItems: 'center'}}>
-					<Text style={{fontSize: 26, color: Colors.white}}>
-						{usuario.nome}
-					</Text>
-				</View>
+				{
+					usuario &&
+						usuario.nome &&
+						<View style={{alignItems: 'center', margin: 5}}>
+							<Text style={{fontSize: usuario.nome.length > 30 ? 18 : 26, color: Colors.white}}>
+								{usuario.nome}
+							</Text>
+						</View>
+				}
 				<View style={{
 					width: 300, 
 					height: 155, 
