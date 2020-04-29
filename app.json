@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "cvaluno",
-    "slug": "cvaluno",
+    "name": "CVAluno",
+    "slug": "CVAluno",
     "platforms": [
       "ios",
       "android",
@@ -12,7 +12,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
 	"splash": {
-		"image": "./assets/images/splash.jpg",
+		"image": "./assets/images/splash2.png",
 		"resizeMode": "cover"
 	},
     "updates": {

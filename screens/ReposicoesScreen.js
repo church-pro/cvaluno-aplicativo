@@ -117,9 +117,11 @@ function ReposicoesScreen(props) {
 							usuario &&
 								usuario.faltas &&
 								usuario.faltas.length === 0 &&
-								<Text style={{fontSize:20, padding: 5, margin: 20}}>
-									Sem faltas para serem Repostas!
-								</Text>
+								<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+									<Text style={{fontSize:20, padding: 5, margin: 20}}>
+										Sem aulas para serem Repostas!
+									</Text>
+								</View>
 						}
 
 					</View>

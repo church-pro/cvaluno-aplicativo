@@ -9,12 +9,45 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function VideoAulaScreen (props) {
 	const { falta } = props.route.params
-	const [mostrarVideo, setMostrarVideo] = React.useState(true)
+	const [mostrarVideo, setMostrarVideo] = React.useState(false)
+	const [mostrarMensagem, setMostrarMensagem] = React.useState(false)
 
 	const navegarParaQuestionario = () => {
 		setMostrarVideo(false)
 		props.navigation.navigate('Anuncio', {perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})
 	}
+
+	const loadResourcesAndDataAsync = async () => {
+		try {
+			let estado = null
+			if(Platform.OS === 'android'){
+				estado = await NetInfo.fetch()
+			}
+			if(Platform.OS === 'web'){
+				estado = await NetInfo.getConnectionInfo()
+			}
+			if(
+				(Platform.OS === 'android' && estado.isConnected) ||
+				(Platform.OS === 'web' && estado) 
+			) {
+				setMostrarVideo(true)
+				setMostrarMensagem(false)
+			}else{
+				setMostrarMensagem(true)
+			}
+		} catch (e) {
+			console.warn(e);
+		}
+	}
+
+	React.useEffect(() => {
+		loadResourcesAndDataAsync()
+	}, [])
+
+	const mostrarAula = () => {
+		loadResourcesAndDataAsync()
+	}
+
 	return (
 		<>
 			<View
@@ -23,6 +56,14 @@ export default function VideoAulaScreen (props) {
 					Aula {falta.posicao}
 				</Text>
 			</View>
+			{
+				mostrarMensagem &&
+					<View style={{alignItems: 'center'}}>
+						<Text style={{fontSize:15, padding: 5, margin: 20}}>
+							Verifique sua internet e tente novamente!
+						</Text>
+					</View>
+			}
 			{
 				mostrarVideo &&
 					<WebView
@@ -36,7 +77,7 @@ export default function VideoAulaScreen (props) {
 					<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
 						<TouchableOpacity
 							style={styles.botao}
-							onPress={() => setMostrarVideo(true)}>
+							onPress={() => mostrarAula()}>
 							<Text style={styles.textoBotao}>
 								Mostrar Aula
 							</Text>

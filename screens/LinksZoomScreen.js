@@ -119,10 +119,12 @@ function LinksZoomScreen(props) {
 						{
 							usuario &&
 								usuario.links &&
-								usuario.links.length === 0 &&
-								<Text style={{fontSize:20, padding: 5, margin: 20}}>
-									Sem links do ZOOM cadastrados!
-								</Text>
+								usuario.links.filter(item => !item.link.includes('@')).length === 0 &&
+								<View style={{flex: 1, alignItems: 'center'}}>
+									<Text style={{fontSize:20, padding: 5, margin: 20}}>
+										Sem links do ZOOM cadastrados!
+									</Text>
+								</View>
 						}
 
 					</View>
@@ -147,18 +149,20 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(LinksZoomScreen)
 
 function Item({ item, onPress }) {
-	return (
-		<TouchableOpacity
-			style={styles.item}
-			onPress={onPress}>
-			<Text style={styles.itemTitle}>Link {item.dia}</Text>
-			<Ionicons
-				name={'md-send'}
-				size={24}
-				color={Colors.white}
-				style={{ marginTop: 5}} />
-		</TouchableOpacity>
-	);
+	let mostrar = <TouchableOpacity
+		style={styles.item}
+		onPress={onPress}>
+		<Text style={styles.itemTitle}>Link {item.dia}</Text>
+		<Ionicons
+			name={'md-send'}
+			size={24}
+			color={Colors.white}
+			style={{ marginTop: 5}} />
+	</TouchableOpacity>
+		if(item.link.includes('@')){
+			mostrar = null 
+		}
+	return mostrar
 }
 
 const styles = StyleSheet.create({

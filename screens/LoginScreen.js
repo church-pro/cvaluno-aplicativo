@@ -147,7 +147,7 @@ function LoginScreen(props) {
 					size={24}
 					style={{ marginBottom: -3 }} />
 					onPress = () => submitHandler()
-					corBotao = Colors.green
+					corBotao = Colors.primary
 				break;
 		}
 		const botao = {
