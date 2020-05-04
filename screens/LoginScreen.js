@@ -23,7 +23,7 @@ const botao = (props) => {
 
 function LoginScreen(props) {
 	const [matricula, setMatricula] = React.useState('')
-	const [carregando, setCarregando] = React.useState(false)
+	const [carregando, setCarregando] = React.useState(true)
 
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
