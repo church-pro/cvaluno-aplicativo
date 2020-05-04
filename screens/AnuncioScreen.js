@@ -17,7 +17,7 @@ export default function TutorialScreen(props) {
 	return (
 		<View style={styles.container}>
 			<Text style={{ color: Colors.primary, fontWeight: 'bold', textAlign: 'center', fontSize: 22, marginVertical: 16 }}>
-				Este anúncio ajuda a manter o projeto grátis
+				Anúncio
 			</Text>
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10, }}>
 				<AdMobBanner
