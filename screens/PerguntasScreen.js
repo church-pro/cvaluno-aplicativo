@@ -55,14 +55,16 @@ function PerguntasScreen (props) {
 					const retorno = await efetivarReposicaoNaAPI(dados)
 					if (retorno.ok) {
 						let mensagem = 'Parabéns a aula foi reposta!'
+						let navegacao = 'Reposicoes'
 						if(tipo === 'presenca'){
-							mensagem = 'Parabéns você recebeu a presença'
+							mensagem = 'Parabéns você recebeu a presença e visto pedagógico'
+							navegacao = 'LinksZOOM'
 						}
 						Alert.alert('Parabéns', mensagem)
 						const faltasAlteradas = usuario.faltas.filter(falta => falta.id !== aula_id)
 						usuario.faltas = faltasAlteradas
 						await props.alterarUsuarioNoAsyncStorage(usuario)
-						props.navigation.navigate('Reposicoes')
+						props.navigation.navigate(navegacao)
 					}
 				}
 			}else{

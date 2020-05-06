@@ -43,12 +43,11 @@ function LiberarQuestionarioScreen(props) {
 
 			<View style={styles.viewInput}>
 				<TextInput
-					styles={styles.input}
 					autoCapitalize="none"
 					placeholderTextColor="#000000"
 					placeholder={'Palavra Chave'}
 					selectionColor="#fff"
-					keyboardType="text"
+					keyboardType="default"
 					value={chave}
 					onChangeText={texto => setChave(texto)}
 					returnKeyType={'go'}
