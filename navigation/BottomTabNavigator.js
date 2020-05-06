@@ -8,6 +8,7 @@ import VideoAulaScreen from '../screens/VideoAulaScreen';
 import PerguntasScreen from '../screens/PerguntasScreen';
 import AnuncioScreen from '../screens/AnuncioScreen';
 import LinksZoomScreen from '../screens/LinksZoomScreen';
+import LiberarQuestionarioScreen from '../screens/LiberarQuestionarioScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -62,6 +63,27 @@ const StackAulaAtual = () => {
 			<Stack.Screen 
 				name="LinksZOOM" 
 				component={LinksZoomScreen} 
+				options={{
+					headerTitle,
+				}} 
+			/>
+			<Stack.Screen 
+				name="LiberarQuestionario" 
+				component={LiberarQuestionarioScreen} 
+				options={{
+					headerTitle,
+				}} 
+			/>
+			<Stack.Screen 
+				name="Anuncio" 
+				component={AnuncioScreen} 
+				options={{
+					headerTitle,
+				}} 
+			/>
+			<Stack.Screen 
+				name="Perguntas" 
+				component={PerguntasScreen} 
 				options={{
 					headerTitle,
 				}} 

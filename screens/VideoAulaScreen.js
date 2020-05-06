@@ -14,7 +14,7 @@ export default function VideoAulaScreen (props) {
 
 	const navegarParaQuestionario = () => {
 		setMostrarVideo(false)
-		props.navigation.navigate('Anuncio', {perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})
+		props.navigation.navigate('Anuncio', {tipo: 'reposicao', perguntas: falta.perguntas, posicao: falta.posicao, aula_id: falta.id})
 	}
 
 	const loadResourcesAndDataAsync = async () => {

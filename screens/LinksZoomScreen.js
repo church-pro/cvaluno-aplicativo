@@ -17,10 +17,7 @@ import { Linking } from 'expo';
 
 function LinksZoomScreen(props) {
 	const [carregando, setCarregando] = React.useState(false)
-
-	const {
-		usuario,
-	} = props
+	const { usuario, } = props
 
 	const [sincronizando, setSincronizando] = React.useState(false)
 
@@ -99,9 +96,22 @@ function LinksZoomScreen(props) {
 						<View
 							style={styles.viewTitulo}>
 							<Text style={styles.viewTituloTexto}>
-								Aula Aberta
+								Aula Aberta - Aula {usuario.aula.posicao}
 							</Text>
 						</View>
+
+						{
+							usuario &&
+								usuario.liberacoes &&
+								usuario.liberacoes.length > 0 &&
+								<SafeAreaView>
+									<FlatList
+										data={usuario.liberacoes}
+										renderItem={({ item }) => <ItemLiberacao item={item} onPress={() => props.navigation.navigate('LiberarQuestionario', {palavraChave: item.chave})} />}
+										keyExtractor={item => `liberacao{item.id}`}
+									/>
+								</SafeAreaView>
+						}
 
 						{
 							usuario &&
@@ -165,6 +175,18 @@ function Item({ item, onPress }) {
 	return mostrar
 }
 
+function ItemLiberacao({ item, onPress }) {
+	return <TouchableOpacity
+		style={styles.itemLiberacao}
+		onPress={onPress}>
+		<Text style={styles.itemTitle}>Questionário Liberado</Text>
+		<Text style={{
+			fontSize: item.professor.length > 30 ? 12 : 24,
+			color: Colors.white
+		}}>{item.professor}</Text>
+	</TouchableOpacity>
+}
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -189,6 +211,13 @@ const styles = StyleSheet.create({
 		borderRadius: 6,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
+	},
+	itemLiberacao: {
+		backgroundColor: 'skyblue',
+		padding: 10,
+		marginVertical: 8,
+		marginHorizontal: 16,
+		borderRadius: 6,
 	},
 	itemTitle: {
 		fontSize: 24,

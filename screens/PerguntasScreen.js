@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { alterarUsuarioNoAsyncStorage, } from '../actions'
 
 function PerguntasScreen (props) {
-	const { perguntas, posicao, aula_id } = props.route.params
+	const { tipo, perguntas, posicao, aula_id } = props.route.params
 	const [listaDeRespostas, setListaDeRespostas] = React.useState({})
 	const [carregando, setCarregando] = React.useState(false)
 	let { usuario } = props
@@ -50,10 +50,15 @@ function PerguntasScreen (props) {
 					const dados = {
 						aula_id,
 						matricula: usuario.matricula,
+						tipo,
 					}
 					const retorno = await efetivarReposicaoNaAPI(dados)
 					if (retorno.ok) {
-						Alert.alert('Parabéns', 'Parabéns a aula foi reposta!')
+						let mensagem = 'Parabéns a aula foi reposta!'
+						if(tipo === 'presenca'){
+							mensagem = 'Parabéns você recebeu a presença'
+						}
+						Alert.alert('Parabéns', mensagem)
 						const faltasAlteradas = usuario.faltas.filter(falta => falta.id !== aula_id)
 						usuario.faltas = faltasAlteradas
 						await props.alterarUsuarioNoAsyncStorage(usuario)

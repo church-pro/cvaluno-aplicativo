@@ -14,9 +14,7 @@ import QRCode from 'react-native-qrcode-generator'
 import Colors from '../constants/Colors';
 
 function CarteirinhaScreen(props) {
-	const {
-		usuario,
-	} = props
+	const { usuario, } = props
 
 	return (
 		<View style={styles.container}>

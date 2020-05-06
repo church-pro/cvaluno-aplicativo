@@ -4,9 +4,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../constants/Colors';
 import { AdMobBanner, } from 'expo-ads-admob';
 
-export default function TutorialScreen(props) {
+export default function AnuncioScreen(props) {
 	const [mostrarBotoes, setMostrarBotoes] = React.useState(false)
-	const { perguntas, posicao, aula_id } = props.route.params
+	const { tipo, perguntas, posicao, aula_id } = props.route.params
 
 	React.useEffect(() => {
 		setTimeout(() => {
@@ -29,7 +29,7 @@ export default function TutorialScreen(props) {
 			{
 				mostrarBotoes &&
 					<TouchableOpacity
-						onPress={() => props.navigation.navigate('Perguntas', {perguntas, posicao, aula_id})}
+						onPress={() => props.navigation.navigate('Perguntas', {tipo, perguntas, posicao, aula_id})}
 						style={styles.botao}>
 						<Text style={styles.textoBotao}>
 							Prosseguir
