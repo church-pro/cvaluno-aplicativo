@@ -23,13 +23,12 @@ const botao = (props) => {
 
 function LoginScreen(props) {
 	const [matricula, setMatricula] = React.useState('')
-	const [carregando, setCarregando] = React.useState(true)
+	const [carregando, setCarregando] = React.useState(false)
 
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
 				setCarregando(true)
-				//await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
 				if (usuario.matricula && usuario.matricula !== '') {
 					props.navigation.navigate('Principal')
