@@ -41,28 +41,30 @@ function LiberarQuestionarioScreen(props) {
 				</Text>
 			</View>
 
-			<View style={styles.viewInput}>
-				<TextInput
-					autoCapitalize="none"
-					placeholderTextColor="#000000"
-					placeholder={'Palavra Chave'}
-					selectionColor="#fff"
-					keyboardType="default"
-					value={chave}
-					onChangeText={texto => setChave(texto)}
-					returnKeyType={'go'}
-					onSubmitEditing={() => submitHandler()}
-				/>
+			<View style={{flex: 1, padding : 24}}>
+				<View style={styles.viewInput}>
+					<TextInput
+						autoCapitalize="none"
+						placeholderTextColor="#000000"
+						placeholder={'Palavra Chave'}
+						selectionColor="#fff"
+						keyboardType="default"
+						value={chave}
+						onChangeText={texto => setChave(texto)}
+						returnKeyType={'go'}
+						onSubmitEditing={() => submitHandler()}
+					/>
+				</View>
+
+				<TouchableOpacity
+					onPress={() => submitHandler()}
+					style={styles.botao}>
+					<Text style={styles.textoBotao}>
+						Validar
+					</Text>
+				</TouchableOpacity>
 			</View>
 
-			<TouchableOpacity
-				onPress={() => submitHandler()}
-				style={styles.botao}>
-				<Text style={styles.textoBotao}>
-					Validar
-				</Text>
-			</TouchableOpacity>
-	
 		</View>
 	);
 }
