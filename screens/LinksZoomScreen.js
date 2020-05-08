@@ -96,7 +96,12 @@ function LinksZoomScreen(props) {
 						<View
 							style={styles.viewTitulo}>
 							<Text style={styles.viewTituloTexto}>
-								Aula Aberta - Aula {usuario.aula.posicao}
+								Aula Aberta
+								{
+									usuario &&
+										usuario.aula &&
+										` - Aula ${usuario.aula.posicao}`
+								}
 							</Text>
 						</View>
 
@@ -176,7 +181,7 @@ function Item({ item, onPress }) {
 }
 
 function ItemLiberacao({ item, onPress }) {
-	return <TouchableOpacity
+	let mostrar = <TouchableOpacity
 		style={styles.itemLiberacao}
 		onPress={onPress}>
 		<Text style={styles.itemTitle}>Questionário Liberado</Text>
@@ -185,6 +190,15 @@ function ItemLiberacao({ item, onPress }) {
 			color: Colors.white
 		}}>{item.professor}</Text>
 	</TouchableOpacity>
+
+	const date1 = new Date();
+	const date2 = new Date(item.data+' '+item.hora);
+	const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+	const diffHoras = Math.ceil(timeDiff / (1000 * 3600));
+	if(diffHoras > 4){
+		mostrar = null
+	}
+	return mostrar
 }
 
 const styles = StyleSheet.create({
