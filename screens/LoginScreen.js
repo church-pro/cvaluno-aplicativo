@@ -31,7 +31,7 @@ function LoginScreen(props) {
 				setCarregando(true)
 				//await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
-				if (usuario.matricula && usuario.matricula !== '') {
+				if (usuario && usuario.matricula && usuario.matricula !== '') {
 					props.navigation.navigate('Principal')
 				}
 			} catch (e) {

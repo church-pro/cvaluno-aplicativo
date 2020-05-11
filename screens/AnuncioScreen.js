@@ -22,7 +22,7 @@ export default function AnuncioScreen(props) {
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10, }}>
 				<AdMobBanner
 					bannerSize="mediumRectangle"
-					adUnitID="ca-app-pub-6689947841260748/8147764780"
+					adUnitID="ca-app-pub-6689947841260748/8985706604"
 					onDidFailToReceiveAdWithError={(e) => console.log('error ', e)}>
 				</AdMobBanner>
 			</View>
