@@ -63,6 +63,7 @@ function LinksZoomScreen(props) {
 		loadResourcesAndDataAsync()
 	}, [])
 
+	console.log(usuario.liberacoes)
 	return (
 		<View style={styles.container}>
 
@@ -113,7 +114,7 @@ function LinksZoomScreen(props) {
 									<FlatList
 										data={usuario.liberacoes}
 										renderItem={({ item }) => <ItemLiberacao item={item} onPress={() => props.navigation.navigate('LiberarQuestionario', {palavraChave: item.chave})} />}
-										keyExtractor={item => `liberacao{item.id}`}
+										keyExtractor={item => `liberacao${item.id}`}
 									/>
 								</SafeAreaView>
 						}
@@ -192,10 +193,10 @@ function ItemLiberacao({ item, onPress }) {
 	</TouchableOpacity>
 
 	const date1 = new Date();
-	const date2 = new Date(item.data+' '+item.hora);
+	const date2 = new Date(item.data+'T'+item.hora);
 	const timeDiff = Math.abs(date2.getTime() - date1.getTime());
 	const diffHoras = Math.ceil(timeDiff / (1000 * 3600));
-	if(diffHoras > 4){
+	if(parseInt(diffHoras) > 4){
 		mostrar = null
 	}
 	return mostrar
