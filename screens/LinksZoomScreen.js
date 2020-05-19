@@ -63,7 +63,6 @@ function LinksZoomScreen(props) {
 		loadResourcesAndDataAsync()
 	}, [])
 
-	console.log(usuario.liberacoes)
 	return (
 		<View style={styles.container}>
 
