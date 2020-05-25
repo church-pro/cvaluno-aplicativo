@@ -14,4 +14,5 @@ export default {
 	white: '#fff',
 	primary: "#2D84C3",
 	green: '#008000',
+	secondary: '#AAAAAA',
 };

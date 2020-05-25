@@ -9,6 +9,7 @@ import PerguntasScreen from '../screens/PerguntasScreen';
 import AnuncioScreen from '../screens/AnuncioScreen';
 import LinksZoomScreen from '../screens/LinksZoomScreen';
 import LiberarQuestionarioScreen from '../screens/LiberarQuestionarioScreen';
+import PostagensScreen from '../screens/PostagensScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -16,7 +17,7 @@ import { alterarUsuarioNoAsyncStorage, } from '../actions'
 import { connect } from 'react-redux'
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Carteirinha';
+const INITIAL_ROUTE_NAME = 'Postagens';
 
 const headerTitle = 'CVAluno'
 const Stack = createStackNavigator();
@@ -28,7 +29,6 @@ const StackReposicoes = () => {
 				component={ReposicoesScreen} 
 				options={{
 					headerTitle,
-					headerLeft: () => null,
 				}} 
 			/>
 			<Stack.Screen 
@@ -155,9 +155,31 @@ const mapDispatchToProps = (dispatch) => {
 
 const StackCarteirinhaConnectado = connect(null, mapDispatchToProps)(StackCarteirinha)
 
+const StackPostagens = () => {
+	return (
+		<Stack.Navigator>
+			<Stack.Screen 
+				name="Postagens" 
+				component={PostagensScreen} 
+				options={{
+					headerTitle,
+				}} 
+			/>
+		</Stack.Navigator>
+	)
+}
+
 export default function BottomTabNavigator({ navigation, route }) {
 	return (
 		<BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+			<BottomTab.Screen
+				name="Postagens"
+				component={StackPostagens}
+				options={{
+					title: 'Postagens',
+					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-home" />,
+				}}
+			/>
 			<BottomTab.Screen
 				name="Carteirinha"
 				component={StackCarteirinhaConnectado}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, Image, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Vibration, Text, Image, Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,9 @@ import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 import Constants from 'expo-constants'
 import Colors from './constants/Colors';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import { pegarTokenNoAsyncStorage, alterarTokenNoAsyncStorage } from './actions'
 
 const logger = store => next => action => {
 	console.group(action.type ? action.type : 'Redux-Thunk')
@@ -43,6 +46,39 @@ export default function App(props) {
 	const containerRef = React.useRef();
 	const { getInitialState } = useLinking(containerRef);
 
+	const registerForPushNotificationsAsync = async () => {
+		if (Constants.isDevice) {
+			const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+			let finalStatus = existingStatus;
+			if (existingStatus !== 'granted') {
+				const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+				finalStatus = status;
+			}
+			if (finalStatus !== 'granted') {
+				alert('Failed to get push token for push notification!');
+				return;
+			}
+			const tokenNaAsyncStorage = await store.dispatch(pegarTokenNoAsyncStorage())
+			if(tokenNaAsyncStorage === ''){
+				const token = await Notifications.getExpoPushTokenAsync();
+				await store.dispatch(alterarTokenNoAsyncStorage(token))
+			}
+		} else {
+			//alert('Must use physical device for Push Notifications');
+		}
+
+		if (Platform.OS === 'android') {
+			Notifications.createChannelAndroidAsync('default', {
+				name: 'default',
+				sound: true,
+				priority: 'max',
+				vibrate: [0, 250, 250, 250],
+			});
+		}
+	};
+
+	const _handleNotification = notification => { Vibration.vibrate(); };
+
 	// Load any resources or data that we need prior to rendering the app
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
@@ -67,6 +103,8 @@ export default function App(props) {
 		}
 
 		loadResourcesAndDataAsync();
+		registerForPushNotificationsAsync()
+		Notifications.addListener(_handleNotification);	
 	}, []);
 
 	if (!isLoadingComplete && !props.skipLoadingScreen) {

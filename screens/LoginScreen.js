@@ -6,12 +6,13 @@ import NetInfo from "@react-native-community/netinfo"
 import {
 	alterarUsuarioNoAsyncStorage,
 	pegarUsuarioNoAsyncStorage,
+	pegarTokenNoAsyncStorage,
 } from '../actions'
-import { sincronizarNaAPI, } from '../helpers/api'
 import { connect } from 'react-redux'
 import Loading from '../components/Loading'
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import { sincronizarNaAPI, salvarTokenNaAPI, alterarTokenNaAPI, consultarTokenNaAPI } from '../helpers/api'
 
 const botao = (props) => {
 	return (
@@ -24,12 +25,15 @@ const botao = (props) => {
 function LoginScreen(props) {
 	const [matricula, setMatricula] = React.useState('')
 	const [carregando, setCarregando] = React.useState(false)
+	const [token, setToken] = React.useState(null)
 
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
 				setCarregando(true)
-				//await props.alterarUsuarioNoAsyncStorage({})
+				const token = await props.pegarTokenNoAsyncStorage()
+				setToken(token)
+				await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
 				if (usuario && usuario.matricula && usuario.matricula !== '') {
 					props.navigation.navigate('Principal')
@@ -68,13 +72,47 @@ function LoginScreen(props) {
 						matricula,
 					}
 					sincronizarNaAPI(dados)
-						.then(retorno => {
-							if (retorno.ok) {
-								props.alterarUsuarioNoAsyncStorage(retorno.usuario)
+						.then(dadosCV => {
+							if (dadosCV.ok) {
+								props.alterarUsuarioNoAsyncStorage(dadosCV.usuario)
 									.then(() => {
-										setCarregando(false)
-										setMatricula('')
-										props.navigation.navigate('Tutorial')
+										const {
+											pessoa_id,
+										} = dadosCV.usuario
+										consultarTokenNaAPI({pessoa_id})
+											.then(dadosAPI => {
+												let grupos = []
+												dadosCV.usuario.grupos.forEach(grupo => {
+													if(!grupos.includes(grupo)){
+														grupos.push(grupo)
+													}
+												})
+												const dados = {
+													token,
+													grupos,
+													pessoa_id,
+													tipo: 2,
+												}
+												if(dadosAPI.ok){
+													alterarTokenNaAPI(dados)
+														.then(retorno => {
+															if (retorno.ok) {
+																setCarregando(false)
+																setMatricula('')
+																props.navigation.navigate('Tutorial')
+															}
+														})
+												}else{
+													salvarTokenNaAPI(dados)
+														.then(retorno => {
+															if (retorno.ok) {
+																setCarregando(false)
+																setMatricula('')
+																props.navigation.navigate('Tutorial')
+															}
+														})
+												}
+											})
 									})
 							} else {
 								Alert.alert('Aviso', 'Aluno inativado, matrícula inválida ou Igreja não habilitada')
@@ -235,7 +273,8 @@ function LoginScreen(props) {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		alterarUsuarioNoAsyncStorage: (usuario) => dispatch(alterarUsuarioNoAsyncStorage(usuario)),
-		pegarUsuarioNoAsyncStorage: (usuario) => dispatch(pegarUsuarioNoAsyncStorage(usuario)),
+		pegarUsuarioNoAsyncStorage: () => dispatch(pegarUsuarioNoAsyncStorage()),
+		pegarTokenNoAsyncStorage: () => dispatch(pegarTokenNoAsyncStorage()),
 	}
 }
 
