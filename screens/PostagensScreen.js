@@ -85,8 +85,6 @@ function PostagensScreen(props) {
 		items.sort((a, b) => (a.hora_criacao < b.hora_criacao) ? 1 : -1)
 	}
 
-	console.log(items.length)
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.viewTitulo}>
