@@ -24,10 +24,6 @@ function PostagensScreen(props) {
 	const [sincronizando, setSincronizando] = React.useState(false)
 	const [mostrarSemInternet, setMostrarSemInternet] = React.useState(false)
 
-	/* testando */
-	delete usuario.grupos
-
-	/* nao estou sicronizado */
 	const buscarGrupos = async () => {
 		const token = await props.pegarTokenNoAsyncStorage()
 		const {matricula} = usuario
