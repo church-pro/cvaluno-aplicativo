@@ -15,13 +15,84 @@ import Loading from '../components/Loading';
 import NetInfo from "@react-native-community/netinfo"
 import Colors from '../constants/Colors';
 import Postagem from '../components/Postagem';
-import { pegarItemsNaAPI, } from '../helpers/api'
+import { sincronizarNaAPI, pegarItemsNaAPI, salvarTokenNaAPI, alterarTokenNaAPI, consultarTokenNaAPI } from '../helpers/api'
+import { alterarUsuarioNoAsyncStorage, pegarTokenNoAsyncStorage, } from '../actions'
 
 function PostagensScreen(props) {
 	const { usuario } = props
 	const [items, setItems] = React.useState([])
 	const [sincronizando, setSincronizando] = React.useState(false)
 	const [mostrarSemInternet, setMostrarSemInternet] = React.useState(false)
+
+	/* testando */
+	delete usuario.grupos
+
+	/* nao estou sicronizado */
+	const buscarGrupos = async () => {
+		const token = await props.pegarTokenNoAsyncStorage()
+		const {matricula} = usuario
+		const dados = {
+			matricula,
+		}
+		await sincronizarNaAPI(dados)
+			.then(dadosCV => {
+				if (dadosCV.ok) {
+					props.alterarUsuarioNoAsyncStorage(dadosCV.usuario)
+						.then(() => {
+							const {
+								pessoa_id,
+							} = usuario
+							let grupos = []
+							dadosCV.usuario.grupos.forEach(grupo => {
+								if(!grupos.includes(grupo)){
+									grupos.push(grupo)
+								}
+							})
+							const dados = {
+								token,
+								grupos,
+								pessoa_id,
+								tipo: 2,
+							}
+							consultarTokenNaAPI({pessoa_id})
+								.then(dadosAPI => {
+									const dadosParaItens = {
+										tipo: 2,
+										grupos,
+									}
+									if(dadosAPI.ok){
+										alterarTokenNaAPI(dados)
+											.then(retorno => {
+												if (retorno.ok) {
+													pegarItemsNaAPI(dadosParaItens)
+														.then(retorno => {
+															if(retorno.ok){
+																setSincronizando(false)
+																setItems(retorno.resultado.items)
+															}
+														})
+												}
+											})
+									}else{
+										salvarTokenNaAPI(dados)
+											.then(() => {
+												if (retorno.ok) {
+													pegarItemsNaAPI(dadosParaItens)
+														.then(retorno => {
+															if(retorno.ok){
+																setSincronizando(false)
+																setItems(retorno.resultado.items)
+															}
+														})
+												}
+											})
+									}
+
+								})
+						})
+				}
+			})
+	}
 
 	const loadResourcesAndDataAsync = async () => {
 		try{
@@ -37,7 +108,7 @@ function PostagensScreen(props) {
 				(Platform.OS === 'web' && estado) 
 			) {
 				if(
-					usuario 
+					usuario
 					&& usuario.grupos 
 				){
 					setSincronizando(true)
@@ -58,6 +129,8 @@ function PostagensScreen(props) {
 								setItems(retorno.resultado.items)
 							}
 						})
+				}else{
+					buscarGrupos()
 				}
 			}else{
 				setSincronizando(false)
@@ -68,6 +141,7 @@ function PostagensScreen(props) {
 			setSincronizando(false)
 		}
 	}
+
 
 	React.useEffect(() => {
 		if(
@@ -130,7 +204,14 @@ const mapStateToProps = ({usuario}) => {
 	return { usuario }
 }
 
-export default connect(mapStateToProps, null)(PostagensScreen)
+const mapDispatchToProps = (dispatch) => {
+	return {
+		alterarUsuarioNoAsyncStorage: (usuario) => dispatch(alterarUsuarioNoAsyncStorage(usuario)),
+		pegarTokenNoAsyncStorage: () => dispatch(pegarTokenNoAsyncStorage()),
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostagensScreen)
 
 const styles = StyleSheet.create({
 	container: {

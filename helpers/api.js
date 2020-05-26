@@ -5,7 +5,7 @@ const CHAVE_USUARIO = 'cvaluno:usuario' + versaoBanco
 const CHAVE_TOKEN = 'cvaluno:token' + versaoBanco
 
 const apiCV = 'https://www.circuitodavisaonovo.com.br'
-const apiMongo = 'http://192.168.150.142:19005'
+const apiMongo = 'https://api.circuitodavisaonovo.com.br'
 const headers = {
 	'Content-Type': 'application/json'
 }

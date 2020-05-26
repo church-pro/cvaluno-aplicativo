@@ -33,7 +33,7 @@ function LoginScreen(props) {
 				setCarregando(true)
 				const token = await props.pegarTokenNoAsyncStorage()
 				setToken(token)
-				await props.alterarUsuarioNoAsyncStorage({})
+				//await props.alterarUsuarioNoAsyncStorage({})
 				const usuario = await props.pegarUsuarioNoAsyncStorage()
 				if (usuario && usuario.matricula && usuario.matricula !== '') {
 					props.navigation.navigate('Principal')
