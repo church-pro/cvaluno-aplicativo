@@ -24,6 +24,54 @@ function PostagensScreen(props) {
 	const [sincronizando, setSincronizando] = React.useState(false)
 	const [mostrarSemInternet, setMostrarSemInternet] = React.useState(false)
 
+	const loadResourcesAndDataAsync = async () => {
+		try{
+			let estado = null
+			if(Platform.OS === 'android'){
+				estado = await NetInfo.fetch()
+			}
+			if(Platform.OS === 'web'){
+				estado = await NetInfo.getConnectionInfo()
+			}
+			if(
+				(Platform.OS === 'android' && estado.isConnected) ||
+				(Platform.OS === 'web' && estado) 
+			) {
+				if(
+					usuario
+					&& usuario.grupos 
+				){
+					setSincronizando(true)
+					let grupos = []
+					usuario.grupos.forEach(grupo => {
+						if(!grupos.includes(grupo)){
+							grupos.push(grupo)
+						}
+					})
+					const dados = {
+						tipo: 2,
+						grupos,
+					}
+					pegarItemsNaAPI(dados)
+						.then(retorno => {
+							if(retorno.ok){
+								setSincronizando(false)
+								setItems(retorno.resultado.items)
+							}
+						})
+				}else{
+					buscarGrupos()
+				}
+			}else{
+				setSincronizando(false)
+				setMostrarSemInternet(true)
+			}
+		} catch (e) {
+			console.warn(e);
+			setSincronizando(false)
+		}
+	}
+
 	const buscarGrupos = async () => {
 		const token = await props.pegarTokenNoAsyncStorage()
 		const {matricula} = usuario
@@ -90,55 +138,6 @@ function PostagensScreen(props) {
 			})
 	}
 
-	const loadResourcesAndDataAsync = async () => {
-		try{
-			let estado = null
-			if(Platform.OS === 'android'){
-				estado = await NetInfo.fetch()
-			}
-			if(Platform.OS === 'web'){
-				estado = await NetInfo.getConnectionInfo()
-			}
-			if(
-				(Platform.OS === 'android' && estado.isConnected) ||
-				(Platform.OS === 'web' && estado) 
-			) {
-				if(
-					usuario
-					&& usuario.grupos 
-				){
-					setSincronizando(true)
-					let grupos = []
-					usuario.grupos.forEach(grupo => {
-						if(!grupos.includes(grupo)){
-							grupos.push(grupo)
-						}
-					})
-					const dados = {
-						tipo: 2,
-						grupos,
-					}
-					pegarItemsNaAPI(dados)
-						.then(retorno => {
-							if(retorno.ok){
-								setSincronizando(false)
-								setItems(retorno.resultado.items)
-							}
-						})
-				}else{
-					buscarGrupos()
-				}
-			}else{
-				setSincronizando(false)
-				setMostrarSemInternet(true)
-			}
-		} catch (e) {
-			console.warn(e);
-			setSincronizando(false)
-		}
-	}
-
-
 	React.useEffect(() => {
 		if(
 			usuario.items
@@ -162,6 +161,20 @@ function PostagensScreen(props) {
 					Linha do Tempo
 				</Text>
 			</View>
+			{
+				sincronizando &&
+					<View style={{
+						flex: 0.1,
+						flexDirection: 'row',
+						alignItems: 'center',
+						alignSelf: 'center',
+					}}>
+						<ActivityIndicator color={Colors.dark}/>
+						<Text style={{ marginLeft: 5, color: Colors.dark }}>
+							Sincronizando ...
+						</Text>
+					</View>
+			}
 			{ 
 				mostrarSemInternet &&
 					<View style={styles.viewTitulo}>
