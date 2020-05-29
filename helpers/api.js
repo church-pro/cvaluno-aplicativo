@@ -3,9 +3,11 @@ import { AsyncStorage } from 'react-native'
 const versaoBanco = '0001'
 const CHAVE_USUARIO = 'cvaluno:usuario' + versaoBanco
 const CHAVE_TOKEN = 'cvaluno:token' + versaoBanco
+const CHAVE_ITEMS = 'cvaluno:items' + versaoBanco
 
 const apiCV = 'https://www.circuitodavisaonovo.com.br'
 const apiMongo = 'https://api.circuitodavisaonovo.com.br'
+//const apiMongo = 'https://api-circuitodavisao-homologaca.herokuapp.com'
 const headers = {
 	'Content-Type': 'application/json'
 }
@@ -73,5 +75,26 @@ export function submeterToken(token) {
 			dados = token
 			AsyncStorage.setItem(CHAVE_TOKEN, JSON.stringify(dados))
 			return token
+		})
+}
+
+export function recuperarItems() {
+	return AsyncStorage.getItem(CHAVE_ITEMS)
+		.then(JSON.parse)
+		.then((dados) => {
+			if (dados === null) {
+				dados = []
+				AsyncStorage.setItem(CHAVE_ITEMS, JSON.stringify(dados))
+			}
+			return dados
+		})
+}
+
+export function submeterItems(items) {
+	return recuperarItems()
+		.then(dados => {
+			dados = items
+			AsyncStorage.setItem(CHAVE_ITEMS, JSON.stringify(dados))
+			return items
 		})
 }

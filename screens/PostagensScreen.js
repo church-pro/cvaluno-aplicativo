@@ -16,15 +16,27 @@ import NetInfo from "@react-native-community/netinfo"
 import Colors from '../constants/Colors';
 import Postagem from '../components/Postagem';
 import { sincronizarNaAPI, pegarItemsNaAPI, salvarTokenNaAPI, alterarTokenNaAPI, consultarTokenNaAPI } from '../helpers/api'
-import { alterarUsuarioNoAsyncStorage, pegarTokenNoAsyncStorage, } from '../actions'
+import {
+	alterarUsuarioNoAsyncStorage,
+	alterarItemsNoAsyncStorage,
+	pegarItemsNoAsyncStorage,
+	pegarTokenNoAsyncStorage
+} from '../actions'
+import { Ionicons } from '@expo/vector-icons';
 
 function PostagensScreen(props) {
 	const { usuario } = props
-	const [items, setItems] = React.useState([])
+	let { items } = props
+	const [carregando, setCarregando] = React.useState(false)
 	const [sincronizando, setSincronizando] = React.useState(false)
-	const [mostrarSemInternet, setMostrarSemInternet] = React.useState(false)
 
-	const loadResourcesAndDataAsync = async () => {
+	const buscarItemsDoCelular = async () => {
+		setCarregando(true)
+		await props.pegarItemsNoAsyncStorage()
+		setCarregando(false)
+	}
+
+	const buscarItemsNaAPI = async () => {
 		try{
 			let estado = null
 			if(Platform.OS === 'android'){
@@ -38,7 +50,7 @@ function PostagensScreen(props) {
 				(Platform.OS === 'web' && estado) 
 			) {
 				if(
-					usuario
+					usuario 
 					&& usuario.grupos 
 				){
 					setSincronizando(true)
@@ -48,15 +60,16 @@ function PostagensScreen(props) {
 							grupos.push(grupo)
 						}
 					})
-					const dados = {
-						tipo: 2,
-						grupos,
-					}
+					const dados = { grupos }
+					console.log(dados)
 					pegarItemsNaAPI(dados)
 						.then(retorno => {
+							console.log(retorno)
 							if(retorno.ok){
 								setSincronizando(false)
-								setItems(retorno.resultado.items)
+								props.alterarItemsNoAsyncStorage(retorno.resultado.items)
+							}else{
+								setSincronizando(false)
 							}
 						})
 				}else{
@@ -64,7 +77,6 @@ function PostagensScreen(props) {
 				}
 			}else{
 				setSincronizando(false)
-				setMostrarSemInternet(true)
 			}
 		} catch (e) {
 			console.warn(e);
@@ -104,34 +116,22 @@ function PostagensScreen(props) {
 										tipo: 2,
 										grupos,
 									}
+									let funcao = salvarTokenNaAPI
 									if(dadosAPI.ok){
-										alterarTokenNaAPI(dados)
-											.then(retorno => {
-												if (retorno.ok) {
-													pegarItemsNaAPI(dadosParaItens)
-														.then(retorno => {
-															if(retorno.ok){
-																setSincronizando(false)
-																setItems(retorno.resultado.items)
-															}
-														})
-												}
-											})
-									}else{
-										salvarTokenNaAPI(dados)
-											.then(() => {
-												if (retorno.ok) {
-													pegarItemsNaAPI(dadosParaItens)
-														.then(retorno => {
-															if(retorno.ok){
-																setSincronizando(false)
-																setItems(retorno.resultado.items)
-															}
-														})
-												}
-											})
+										funcao = alterarTokenNaAPI
 									}
-
+									funcao(dados)
+										.then(retorno => {
+											if (retorno.ok) {
+												pegarItemsNaAPI(dadosParaItens)
+													.then(retorno => {
+														if(retorno.ok){
+															setSincronizando(false)
+															props.alterarItemsNoAsyncStorage(retorno.resultado.items)
+														}
+													})
+											}
+										})
 								})
 						})
 				}
@@ -139,17 +139,12 @@ function PostagensScreen(props) {
 	}
 
 	React.useEffect(() => {
-		if(
-			usuario.items
-			&& usuario.items.length > 0 
-		){
-			setItems(usuario.items)
-		}
-
-		loadResourcesAndDataAsync()
+		buscarItemsDoCelular()
+		buscarItemsNaAPI()
 	}, [])
 
 	if(items.length > 0){
+		items = items.filter(item => item.tipo === 2) // alunos
 		items.sort((a, b) => (a.data_criacao < b.data_criacao) ? 1 : -1)
 		items.sort((a, b) => (a.hora_criacao < b.hora_criacao) ? 1 : -1)
 	}
@@ -162,7 +157,7 @@ function PostagensScreen(props) {
 				</Text>
 			</View>
 			{
-				sincronizando &&
+				(sincronizando || carregando) &&
 					<View style={{
 						flex: 0.1,
 						flexDirection: 'row',
@@ -171,15 +166,7 @@ function PostagensScreen(props) {
 					}}>
 						<ActivityIndicator color={Colors.dark}/>
 						<Text style={{ marginLeft: 5, color: Colors.dark }}>
-							Sincronizando ...
-						</Text>
-					</View>
-			}
-			{ 
-				mostrarSemInternet &&
-					<View style={styles.viewTitulo}>
-						<Text style={styles.viewTituloTexto}>
-							Verifique sua Internet e tente novamente							
+							{sincronizando ? 'Sincronizando' : 'Carregando'} ...
 						</Text>
 					</View>
 			}
@@ -189,9 +176,9 @@ function PostagensScreen(props) {
 					<SafeAreaView style={{flex: 1}}>
 						<FlatList
 							refreshing={sincronizando}
-							onRefresh={() => loadResourcesAndDataAsync()}
+							onRefresh={() => buscarItemsNaAPI()}
 							data={items}
-							renderItem={({ item }) => <Postagem item={item}  />}
+							renderItem={({ item }) => <Postagem item={item} navigation={props.navigation} />}
 							keyExtractor={item => `postagem${item._id}`}
 						/>
 					</SafeAreaView>
@@ -200,21 +187,29 @@ function PostagensScreen(props) {
 				items &&
 					items.length === 0 &&
 					<View style={styles.viewTituloSecondary}>
-						<Text style={styles.viewTituloTexto}>
-							Sem Postagens
-						</Text>
+						<TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => buscarItemsNaAPI()}>
+							<Text style={styles.viewTituloTexto}>
+								Sem Postagens
+							</Text>
+							<Ionicons size={24} name='md-refresh' style={{color: Colors.white, marginLeft: 10, marginTop: 5}} />
+						</TouchableOpacity>
 					</View>
 			}
 		</View>
 	);
 }
 
-const mapStateToProps = ({usuario}) => {
-	return { usuario }
+const mapStateToProps = ({usuario, items}) => {
+	return { 
+		usuario,
+		items,
+	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
+		alterarItemsNoAsyncStorage: (items) => dispatch(alterarItemsNoAsyncStorage(items)),
+		pegarItemsNoAsyncStorage: () => dispatch(pegarItemsNoAsyncStorage()),
 		alterarUsuarioNoAsyncStorage: (usuario) => dispatch(alterarUsuarioNoAsyncStorage(usuario)),
 		pegarTokenNoAsyncStorage: () => dispatch(pegarTokenNoAsyncStorage()),
 	}
