@@ -184,14 +184,14 @@ function PostagensScreen(props) {
 			{ 
 				items &&
 					items.length === 0 &&
-					<View style={styles.viewTituloSecondary}>
-						<TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => buscarItemsNaAPI()}>
+					<TouchableOpacity onPress={() => buscarItemsNaAPI()}>
+						<View style={styles.viewTituloSecondary}>
 							<Text style={styles.viewTituloTexto}>
 								Sem Postagens
 							</Text>
 							<Ionicons size={24} name='md-refresh' style={{color: Colors.white, marginLeft: 10, marginTop: 5}} />
-						</TouchableOpacity>
-					</View>
+						</View>
+					</TouchableOpacity>
 			}
 		</View>
 	);
@@ -230,9 +230,11 @@ const styles = StyleSheet.create({
 	viewTituloSecondary: {
 		backgroundColor: Colors.secondary,
 		alignItems: 'center',
+		justifyContent: 'center',
 		borderRadius: 6,
 		padding: 10,
 		margin: 10,
+		flexDirection: 'row',
 	},
 	viewTituloTexto: {
 		fontSize: 24,
