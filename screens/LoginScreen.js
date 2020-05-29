@@ -92,25 +92,18 @@ function LoginScreen(props) {
 													pessoa_id,
 													tipo: 2,
 												}
+												let funcao = salvarTokenNaAPI
 												if(dadosAPI.ok){
-													alterarTokenNaAPI(dados)
-														.then(retorno => {
-															if (retorno.ok) {
-																setCarregando(false)
-																setMatricula('')
-																props.navigation.navigate('Tutorial')
-															}
-														})
-												}else{
-													salvarTokenNaAPI(dados)
-														.then(retorno => {
-															if (retorno.ok) {
-																setCarregando(false)
-																setMatricula('')
-																props.navigation.navigate('Tutorial')
-															}
-														})
+													funcao = alterarTokenNaAPI
 												}
+												funcao(dados)
+													.then(retorno => {
+														if (retorno.ok) {
+															setCarregando(false)
+															setMatricula('')
+															props.navigation.navigate('Tutorial')
+														}
+													})
 											})
 									})
 							} else {

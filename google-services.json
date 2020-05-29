@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "102909808254",
+    "firebase_url": "https://circuitodavisao-e3eaa.firebaseio.com",
+    "project_id": "circuitodavisao-e3eaa",
+    "storage_bucket": "circuitodavisao-e3eaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102909808254:android:a08c0ea738718ce03e122f",
+        "android_client_info": {
+          "package_name": "br.com.cvaluno.exp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102909808254-2u2jei3vk7eo7ft13qdm0uu3gnsktt9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCslfhNi7EhnLWPSsUw54y6hWPFXDeoGFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102909808254-2u2jei3vk7eo7ft13qdm0uu3gnsktt9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

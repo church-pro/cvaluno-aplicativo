@@ -6,7 +6,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -25,10 +25,11 @@
     },
 	"android": {
 		"package": "br.com.cvaluno.exp",
-		"versionCode": 7,
+		"versionCode": 8,
 		"config":{
 			"googleMobileAdsAppId": "ca-app-pub-6689947841260748~1454507426"
-		}
+		},
+		"googleServicesFile": "./google-services.json"
 	}
   }
 }
