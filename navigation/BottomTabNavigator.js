@@ -13,7 +13,7 @@ import PostagensScreen from '../screens/PostagensScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import { alterarUsuarioNoAsyncStorage, } from '../actions'
+import { alterarUsuarioNoAsyncStorage, alterarItemsNoAsyncStorage } from '../actions'
 import { connect } from 'react-redux'
 
 const BottomTab = createBottomTabNavigator();
@@ -112,6 +112,7 @@ const StackCarteirinha = (props) => {
 
 	const sair = async () => {
 		await props.alterarUsuarioNoAsyncStorage({})
+		await props.alterarItemsNoAsyncStorage([])
 		props.navigation.navigate('Login')
 	}
 
@@ -150,6 +151,7 @@ const StackCarteirinha = (props) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		alterarUsuarioNoAsyncStorage: (usuario) => dispatch(alterarUsuarioNoAsyncStorage(usuario)),
+		alterarItemsNoAsyncStorage: (usuario) => dispatch(alterarItemsNoAsyncStorage(usuario)),
 	}
 }
 

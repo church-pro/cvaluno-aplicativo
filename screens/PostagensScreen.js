@@ -61,10 +61,8 @@ function PostagensScreen(props) {
 						}
 					})
 					const dados = { grupos }
-					console.log(dados)
 					pegarItemsNaAPI(dados)
 						.then(retorno => {
-							console.log(retorno)
 							if(retorno.ok){
 								setSincronizando(false)
 								props.alterarItemsNoAsyncStorage(retorno.resultado.items)
