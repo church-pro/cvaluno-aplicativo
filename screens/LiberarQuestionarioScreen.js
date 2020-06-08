@@ -55,6 +55,9 @@ function LiberarQuestionarioScreen(props) {
 						onSubmitEditing={() => submitHandler()}
 					/>
 				</View>
+				<Text style={{ alignSelf: 'center', fontSize: 18, color: Colors.dark}}>
+					Palavra Chave em minúsculo
+				</Text>
 
 				<TouchableOpacity
 					onPress={() => submitHandler()}
