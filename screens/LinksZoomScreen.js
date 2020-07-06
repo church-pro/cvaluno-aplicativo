@@ -195,7 +195,7 @@ function ItemLiberacao({ item, onPress }) {
 	const date2 = new Date(item.data+'T'+item.hora);
 	const timeDiff = Math.abs(date2.getTime() - date1.getTime());
 	const diffHoras = Math.ceil(timeDiff / (1000 * 3600));
-	if(parseInt(diffHoras) > 4){
+	if(parseInt(diffHoras) > 6){
 		mostrar = null
 	}
 	return mostrar
