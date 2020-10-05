@@ -75,36 +75,9 @@ function LoginScreen(props) {
 							if (dadosCV.ok) {
 								props.alterarUsuarioNoAsyncStorage(dadosCV.usuario)
 									.then(() => {
-										const {
-											pessoa_id,
-										} = dadosCV.usuario
-										consultarTokenNaAPI({pessoa_id})
-											.then(dadosAPI => {
-												let grupos = []
-												dadosCV.usuario.grupos.forEach(grupo => {
-													if(!grupos.includes(grupo)){
-														grupos.push(grupo)
-													}
-												})
-												const dados = {
-													token,
-													grupos,
-													pessoa_id,
-													tipo: 2,
-												}
-												let funcao = salvarTokenNaAPI
-												if(dadosAPI.ok){
-													funcao = alterarTokenNaAPI
-												}
-												funcao(dados)
-													.then(retorno => {
-														if (retorno.ok) {
-															setCarregando(false)
-															setMatricula('')
-															props.navigation.navigate('Tutorial')
-														}
-													})
-											})
+										setCarregando(false)
+										setMatricula('')
+										props.navigation.navigate('Tutorial')
 									})
 							} else {
 								Alert.alert('Aviso', 'Aluno inativado, matrícula inválida ou Igreja não habilitada')

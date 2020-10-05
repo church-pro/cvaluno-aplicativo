@@ -103,8 +103,8 @@ export default function App(props) {
 		}
 
 		loadResourcesAndDataAsync();
-		registerForPushNotificationsAsync()
-		Notifications.addListener(_handleNotification);	
+		//registerForPushNotificationsAsync()
+		//Notifications.addListener(_handleNotification);	
 	}, []);
 
 	if (!isLoadingComplete && !props.skipLoadingScreen) {

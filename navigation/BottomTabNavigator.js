@@ -17,7 +17,7 @@ import { alterarUsuarioNoAsyncStorage, alterarItemsNoAsyncStorage } from '../act
 import { connect } from 'react-redux'
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Postagens';
+const INITIAL_ROUTE_NAME = 'Carteirinha';
 
 const headerTitle = 'CVAluno'
 const Stack = createStackNavigator();
@@ -55,7 +55,6 @@ const StackReposicoes = () => {
 		</Stack.Navigator>
 	)
 }
-
 
 const StackAulaAtual = () => {
 	return (
@@ -174,14 +173,6 @@ const StackPostagens = () => {
 export default function BottomTabNavigator({ navigation, route }) {
 	return (
 		<BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
-			<BottomTab.Screen
-				name="Postagens"
-				component={StackPostagens}
-				options={{
-					title: 'Postagens',
-					tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-home" />,
-				}}
-			/>
 			<BottomTab.Screen
 				name="Carteirinha"
 				component={StackCarteirinhaConnectado}
